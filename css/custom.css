@@ -1,0 +1,169 @@
+body,
+html {
+    text-align: center;
+    margin: auto;
+    background-color: rgb(199, 199, 199);
+    background-image: linear-gradient(rgb(129, 129, 129), rgb(199, 199, 199));
+    -webkit-background-size: contain;
+    -moz-background-size: contain;
+    -o-background-size: contain;
+    background-size: contain;
+    height: fit-content;
+    background-repeat: no-repeat;
+    font-family: Arial, Verdana, Tahoma, sans-serif;
+}
+
+#root {
+    vertical-align: middle;
+    width: 100%;
+}
+
+#menu {
+    display: none;
+    text-align: center;
+
+}
+
+#menu #score {
+    display: inline-block;
+
+}
+
+#menu #time {
+    display: inline-block;
+}
+
+#menu #mines-left {
+    display: inline-block;
+    padding-top: 25px;
+}
+
+#menu button {
+    display: block;
+    background-color: rgb(179, 179, 179);
+    border: 1px solid rgb(129, 129, 129);
+    width: 200px;
+    height: 50px;
+    margin: 25px;
+    font-size: 1.2em;
+    text-align: center;
+    margin: 25px auto 25px;
+}
+
+#settings {
+    display: block;
+    margin: auto;
+    width: 400px;
+    height: 400px;
+    text-align: center;
+}
+
+#settings button {
+    display: block;
+    color: rgb(25, 25, 25);
+    background-color: rgb(179, 179, 179);
+    border: 1px solid rgb(129, 129, 129);
+    width: 200px;
+    height: 50px;
+    margin: 25px;
+    font-size: 1.2em;
+}
+
+#settings input {
+    display: block;
+    color: rgb(25, 25, 25);
+    background-color: rgb(179, 179, 179);
+    border: 1px solid rgb(129, 129, 129);
+    width: 100px;
+    height: 25px;
+    margin: 25px;
+    font-size: 1.2em;
+}
+
+#settings label {
+    width: 150px;
+    clear: both;
+    float: left;
+    display: block;
+}
+
+#board {
+    display: none;
+    vertical-align: middle;
+    margin: 25px;
+}
+
+.row {
+    display: block;
+}
+
+.col {
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    text-align: center;
+    vertical-align: top;
+    line-height: 50px;
+    font-size: 1.5em;
+    transition: all .5s ease-in-out;
+    margin: 0;
+    padding: 0;
+    background-color: rgb(159, 159, 159);
+    border: 1px solid rgb(169, 169, 169);
+}
+
+.col>.fa-flag {
+    pointer-events: none;
+}
+
+.hidden {
+    background-color: rgb(179, 179, 179);
+    border: 1px solid rgb(169, 169, 169);
+}
+
+.hidden:hover {
+    background-color: rgb(219, 219, 219);
+}
+
+.mine {
+    background-color: rgb(255, 0, 0);
+    border: 1px solid rgb(169, 169, 169);
+    color: rgb(255, 255, 255);
+}
+
+.revealed {
+    background-color: rgb(199, 199, 199);
+    border: 1px solid rgb(189, 189, 189);
+}
+
+.revealed1 {
+    color: rgb(0, 0, 255);
+}
+
+.revealed2 {
+    color: rgb(0, 123, 0);
+}
+
+.revealed3 {
+    color: rgb(255, 0, 0);
+}
+
+.revealed4 {
+    color: rgb(0, 0, 123);
+}
+
+.revealed6 {
+    color: rgb(123, 0, 0);
+}
+
+.revealed7 {
+    color: rgb(0, 123, 123);
+}
+
+.revealed8 {
+    color: rgb(0, 0, 0);
+}
+
+audio {
+    display: none;
+}

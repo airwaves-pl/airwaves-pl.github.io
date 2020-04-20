@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.slim.min.js"
+        integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+        integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="css/custom.css">
+    <title>Minesweeper</title>
+</head>
+
+<body>
+    <div id="root">
+        <audio id="bomb-sound" src="sound/bomb.mp3"></audio>
+        <audio id="win-sound"
+            src="https://www.soundboard.com/mediafiles/23/230752-4faebd43-60e9-43c3-8d50-40cc8441eff1.mp3"></audio>
+        <header id="menu">
+            <div id="mines-left">Mines left: 10</div>
+            <button id="newGame" onclick="location.reload(true);">New game</button>
+        </header>
+        <nav id="settings">
+            <button id="easy" name="easy" onclick="controller.startGame('easy');">Easy</button>
+            <button id="hard" name="hard" onclick="controller.startGame('hard');">Hard</button>
+            <button id="custom" name="custom" onclick="controller.startGame('custom');">Custom</button>
+            <label for="rows">Rows</label>
+            <input id="rows" name="rows" type="number" placeholder="Rows" min="2" max="40">
+            <label for="cols">Columns</label>
+            <input id="cols" name="cols" type="number" placeholder="Columns" min="2" max="40">
+            <label for="mines">Number of mines</label>
+            <input id="mines" name="mines" type="number" placeholder="Mines" min="2" max="100">
+        </nav>
+        <main id="board">
+        </main>
+    </div>
+    <script src="js/util.js"></script>
+    <script src="js/model.js"></script>
+    <script src="js/view.js"></script>
+    <script src="js/controller.js"></script>
+</body>
+
+</html>
