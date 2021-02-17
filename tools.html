@@ -8,9 +8,9 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
 
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-	
+
 	<title>Invoice rollback tools</title>
-	
+
 	<style type="text/css">
 		textarea {
 			height: 25vh !important;
@@ -23,7 +23,6 @@
 	<div class="container mb-3">
 		<div class="row">
 			<div class="col-sm mb-3 form-floating">
-				
 				<textarea id="gsd_script" name="gsd_script" rows="50" cols="50" v-model="gsd_script" class="form-control"></textarea>
 				<label for="gsd_script" class="form-label">Document_IDs from the GSD's script:</label>
 			</div>
@@ -39,6 +38,7 @@
 			<div class="col-sm mb-3">
 				<div role="alert" role="alert"class="alert" v-bind:class="missing_document_ids_class" v-if="showWarnings['show-missing_document_ids']">Missing Document_IDs: {{missing_document_ids}}</div>
 				<div role="alert" class="alert" v-bind:class="unnecessary_document_ids_class" v-if="showWarnings['show-unnecessary_document_ids']">Unnecessary Document_IDs: {{unnecessary_document_ids}}</div>
+				<div role="alert" class="alert alert-info" v-if="showWarnings['show-duplicated_documents_ids']">Duplicated Document_IDs: {{duplicated_documents_ids}}</div>
 			</div>
 		</div>
 	</div>
@@ -69,6 +69,7 @@
 			db_results: '',
 			missing_document_ids: [],
 			unnecessary_document_ids: [],
+			duplicated_documents_ids: [],
 			duplicates_to_check: '',
 			duplicates: [],
 		},
@@ -77,6 +78,7 @@
 				return {
 					'show-missing_document_ids': this.missing_document_ids.length > 0,
 					'show-unnecessary_document_ids': this.unnecessary_document_ids.length > 0,
+					'show-duplicated_documents_ids': this.duplicated_documents_ids.length > 0,
 					'show-duplicates': this.duplicates.length > 0
 				}
 			},
@@ -113,7 +115,7 @@
 
 				this.missing_document_ids = Array.from(db_results_set).filter(item => item !== '' && !gsd_script_set.has(item));
 				this.unnecessary_document_ids = Array.from(gsd_script_set).filter(item => item !== '' && !db_results_set.has(item));
-				console.log(this.missing_document_ids.length);
+				this.duplicated_documents_ids = Array.from(db_results_set).filter(item => item !== '' && gsd_script_set.has(item));
 			},
 			findDuplicates() {
 				const item_count_map = new Map();
@@ -136,6 +138,5 @@
 		}
 	});
 </script>
-
 </body>
 </html>
