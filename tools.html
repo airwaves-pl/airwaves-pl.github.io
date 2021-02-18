@@ -3,143 +3,99 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>List comparison tools</title>
 
-	<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
-
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-
-	<title>Invoice rollback tools</title>
-
-	<style type="text/css">
-		body {
-			font-family: Courier New !important;
-		}
-		textarea {
-			height: 25vh !important;
-		}
-	</style>
+	<link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" crossorigin="anonymous" />
+	<link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" crossorigin="anonymous" />
+	<link type="text/css" rel="stylesheet" href="tools.min.css" />
+	<script src="https://polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
+	<script src="https://unpkg.com/vue@latest/dist/vue.min.js" crossorigin="anonymous"></script>
+	<script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js" crossorigin="anonymous"></script>
+	<script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
-
-<div id="app" class="container">
-	<div class="container mb-3">
-		<div class="row">
-			<div class="col-sm mb-3 form-floating">
-				<textarea id="gsd_script" name="gsd_script" rows="50" cols="50" v-model="gsd_script" class="form-control"></textarea>
-				<label for="gsd_script" class="form-label">Document_IDs from the GSD's script:</label>
-			</div>
-			<div class="col-sm mb-3 form-floating">
-				<textarea id="db_results" name="db_results" rows="50" cols="50" v-model="db_results" class="form-control"></textarea>
-				<label for="gsd_script" class="form-label">Document_IDs from the database:</label>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm mb-3">
-				<button @click="compareDocumentIds" class="form-control">Compare Document_IDs</button>
-			</div>
-			<div class="col-sm mb-3">
-				<div role="alert" role="alert"class="alert" v-bind:class="missing_document_ids_class" v-if="showWarnings['show-missing_document_ids']">Missing Document_IDs: {{missing_document_ids}}</div>
-				<div role="alert" class="alert" v-bind:class="unnecessary_document_ids_class" v-if="showWarnings['show-unnecessary_document_ids']">Unnecessary Document_IDs: {{unnecessary_document_ids}}</div>
-				<div role="alert" class="alert alert-info" v-if="showWarnings['show-duplicated_documents_ids']">Duplicated Document_IDs: {{duplicated_documents_ids}}</div>
-			</div>
-		</div>
+	<div id="app" class="container mt-3 card text-center p-3">
+		<b-card no-body>
+			<b-tabs content-class="mt-3" pills card fill>
+				<b-tab title="Compare lists" active>
+					<b-card-text>
+						<div class="container">
+							<div class="row test">
+								<div class="col-sm mb-3 text-center">
+									<label for="sourceList" class="form-label">Source list</label>
+									<textarea id="sourceList" name="sourceList" v-model="sourceList" class="form-control"></textarea>
+								</div>
+								<div class="col-sm mb-3 text-center">
+									<label for="targetList" class="form-label">Target list</label>
+									<textarea id="targetList" name="targetList" v-model="targetList" class="form-control"></textarea>
+								</div>
+							</div>
+							<div class="mb-3">
+								<button @click="compareLists" class="form-control btn btn-primary text-white">Compare lists</button>
+							</div>
+							<div class="mb-3 test2">
+								<div role="alert" class="alert" v-bind:class="rightJoinClass" v-if="showWarnings['show-right-join']">
+									Missing in source list: {{rightJoin}}
+								</div>
+								<div role="alert" class="alert" v-bind:class="leftJoinClass" v-if="showWarnings['show-left-join']">
+									Not contained in target list: {{leftJoin}}
+								</div>
+								<div role="alert" class="alert alert-info" v-if="showWarnings['show-inner-join']">
+									Contained in both lists: {{innerJoin}}
+								</div>
+							</div>
+						</div>
+					</b-card-text>
+				</b-tab>
+				<b-tab title="Find duplicates" >
+					<b-card-text>
+						<div class="container">
+							<div class="mb-3">
+								<div class="mb-3 text-center">
+									<label for="repetetiveItems" class="form-label">Repetetive items</label>
+									<textarea id="repetetiveItems" name="repetetiveItems" rows="50" cols="50" v-model="repetetiveItems" class="form-control"></textarea>
+								</div>
+							</div>
+							<div class="mb-3">
+								<button @click="findDuplicates" class="form-control btn btn-primary text-white">Find duplicates</button>
+							</div>
+							<div class="mb-3">
+								<div role="alert" class="alert alert-danger" v-if="showWarnings['show-duplicates']">Duplicates: {{duplicates}}</div>
+								<div role="alert" class="alert alert-success" v-if="showWarnings['show-no-duplicates']">No duplicates found</div>
+							</div>
+						</div>
+					</b-card-text>
+				</b-tab>
+				<b-tab title="Find occurences">
+					<b-card-text>
+						<div class="container">
+							<div class="row">
+								<div class="col-sm mb-3 text-center">
+									<label for="keywords" class="form-label">Keywords</label>
+									<textarea id="keywords" name="keywords" v-model="keywords" class="form-control"></textarea>
+								</div>
+								<div class="col-sm mb-3 text-center">
+									<label for="textToCheck" class="form-label">Text to check</label>
+									<textarea id="textToCheck" name="textToCheck" v-model="textToCheck" class="form-control"></textarea>
+								</div>
+							</div>
+							<div class="mb-3">
+								<button @click="findOccurences" class="form-control btn btn-primary text-white">Find occurences</button>
+							</div>
+							<div class="mb-3">
+								<div role="alert" class="alert alert-success" v-if="showWarnings['show-occured']">
+									Keywords that occured: {{occured}}
+								</div>
+								<div role="alert" class="alert alert-danger" v-if="showWarnings['show-not-occured']">
+									Keywords that do not occured: {{notOccured}}
+								</div>
+							</div>
+						</div>
+					</b-card-text>
+				</b-tab>
+			</b-tabs>
+		</b-card>
 	</div>
-	<div class="container">
-		<div class="row">
-			<div class="col-sm mb-3 form-floating">
-				<textarea id="duplicates_to_check" name="duplicates_to_check" rows="50" cols="50" v-model="duplicates_to_check" class="form-control"></textarea>
-				<label for="duplicates_to_check" class="form-label">Non-unique values to check:</label>
-			</div>
-			<div class="col-sm mb-3">
-				<div role="alert" class="alert" v-bind:class="duplicates_class" v-if="showWarnings['show-duplicates']">Duplicates: {{duplicates}}</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm mb-3">
-				<button @click="findDuplicates" class="form-control">Check duplicates</button>
-			</div>
-			<div class="col-sm mb-3"></div>
-		</div>
-	</div>
-</div>
-
-<script>
-	var app = new Vue({
-		el: '#app',
-		data: {
-			gsd_script: '',
-			db_results: '',
-			missing_document_ids: [],
-			unnecessary_document_ids: [],
-			duplicated_documents_ids: [],
-			duplicates_to_check: '',
-			duplicates: [],
-		},
-		computed: {
-			showWarnings: function () {
-				return {
-					'show-missing_document_ids': this.missing_document_ids.length > 0,
-					'show-unnecessary_document_ids': this.unnecessary_document_ids.length > 0,
-					'show-duplicated_documents_ids': this.duplicated_documents_ids.length > 0,
-					'show-duplicates': this.duplicates.length > 0
-				}
-			},
-			missing_document_ids_class: function () {
-				return {
-					'alert-danger': this.missing_document_ids.length > 0,
-					'alert-success': this.missing_document_ids.length == 0
-				}
-			},
-			unnecessary_document_ids_class: function () {
-				return {
-					'alert-danger': this.unnecessary_document_ids.length > 0,
-					'alert-success': this.unnecessary_document_ids.length == 0
-				}
-			},
-			duplicates_class: function () {
-				return {
-					'alert-danger': this.duplicates.length > 0,
-					'alert-success': this.duplicates.length == 0
-				}
-			}
-		},
-		methods: {
-			compareDocumentIds() {
-				const gsd_script_set = new Set();
-				const db_results_set = new Set();
-
-				this.gsd_script.replace(/"|'|,/g, "")
-					.split(/\r?\n/)
-					.forEach(item => gsd_script_set.add(item));
-				this.db_results.replace(/"|'|,/g, "")
-					.split(/\r?\n/)
-					.forEach(item => db_results_set.add(item));
-
-				this.missing_document_ids = Array.from(db_results_set).filter(item => item !== '' && !gsd_script_set.has(item));
-				this.unnecessary_document_ids = Array.from(gsd_script_set).filter(item => item !== '' && !db_results_set.has(item));
-				this.duplicated_documents_ids = Array.from(db_results_set).filter(item => item !== '' && gsd_script_set.has(item));
-			},
-			findDuplicates() {
-				const item_count_map = new Map();
-				this.duplicates = [];
-
-				this.duplicates_to_check.replace(/"|'|,/g, "")
-					.split(/\r?\n/)
-					.filter(item => item !== '')
-					.forEach(item => {
-						let prev_value = item_count_map.get(item);
-						item_count_map.set(item, typeof prev_value === 'undefined' ? 1 : ++prev_value);
-					});
-
-				item_count_map.forEach((value,key) => {
-					if (value > 1) {
-						this.duplicates.push(key);
-					}
-				});
-			}
-		}
-	});
-</script>
+	<script src="tools.min.js"></script>
 </body>
 </html>
