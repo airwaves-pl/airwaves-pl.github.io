@@ -10,7 +10,7 @@ const app = new Vue({
         rightJoin: [],
         leftJoin: [],
         innerJoin: [],
-        repetetiveItems: '',
+        repetitiveItems: '',
         duplicates: [],
         findDuplicatesClicked: false,
         keywords: '',
@@ -71,7 +71,7 @@ const app = new Vue({
             const itemCountMap = new Map();
             this.duplicates = [];
 
-            this.repetetiveItems
+            this.repetitiveItems
                 .trim()
                 .replace(QUOTES_COMMA_SEMICOLON_TAB_SPACE, EMPTY_STRING)
                 .split(NEW_LINE)
