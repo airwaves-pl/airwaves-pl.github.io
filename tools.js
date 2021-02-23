@@ -1,6 +1,6 @@
 const EMPTY_STRING = '';
 const NEW_LINE = new RegExp('\r?\n');
-const QUOTES_COMMA_SEMICOLON_TAB_SPACE = new RegExp('"|\'|,|;|\s', 'g');
+const QUOTES_COMMA_SEMICOLON_TAB_SPACE = new RegExp('"|\'|,|;|\\t', 'g');
 
 const app = new Vue({
     el: '#app',
@@ -14,6 +14,7 @@ const app = new Vue({
         duplicates: [],
         findDuplicatesClicked: false,
         keywords: '',
+        replacement: '',
         textToCheck: '',
         occured: [],
         notOccured: []
@@ -49,10 +50,12 @@ const app = new Vue({
             const targetSet = new Set();
 
             this.sourceList
+                .trim()
                 .replace(QUOTES_COMMA_SEMICOLON_TAB_SPACE, EMPTY_STRING)
                 .split(NEW_LINE)
                 .forEach(item => sourceSet.add(item));
             this.targetList
+                .trim()
                 .replace(QUOTES_COMMA_SEMICOLON_TAB_SPACE, EMPTY_STRING)
                 .split(NEW_LINE)
                 .forEach(item => targetSet.add(item));
@@ -69,6 +72,7 @@ const app = new Vue({
             this.duplicates = [];
 
             this.repetetiveItems
+                .trim()
                 .replace(QUOTES_COMMA_SEMICOLON_TAB_SPACE, EMPTY_STRING)
                 .split(NEW_LINE)
                 .filter(item => item !== EMPTY_STRING)
@@ -91,12 +95,38 @@ const app = new Vue({
             this.notOccured = [];
 
             this.keywords
+                .trim()
                 .replace(QUOTES_COMMA_SEMICOLON_TAB_SPACE, EMPTY_STRING)
                 .split(NEW_LINE)
                 .filter(keyword => keyword !== EMPTY_STRING)
                 .forEach(keyword => {
-                    const regex = new RegExp(keyword);
+                    const regexp = new RegExp(keyword);
+                    const found = regexp.test(this.textToCheck);
+                    itemOccurenceMap.set(keyword, found);
+                });
+
+            itemOccurenceMap.forEach((value, key) => {
+                if (value) {
+                    this.occured.push(key);
+                } else {
+                    this.notOccured.push(key);
+                }
+            });
+        },
+        findAndReplaceOccurences() {
+            const itemOccurenceMap = new Map();
+            this.occured = [];
+            this.notOccured = [];
+
+            this.keywords
+                .replace(QUOTES_COMMA_SEMICOLON_TAB_SPACE, EMPTY_STRING)
+                .split(NEW_LINE)
+                .filter(keyword => keyword !== EMPTY_STRING)
+                .forEach(keyword => {
+                    const regex = new RegExp(keyword, 'g');
                     const found = regex.test(this.textToCheck);
+                    const replace = typeof this.replacement === 'undefined' ? EMPTY_STRING : this.replacement; 
+                    this.textToCheck = this.textToCheck.replace(regex, replace);
                     itemOccurenceMap.set(keyword, found);
                 });
 
