@@ -16,8 +16,8 @@ const app = new Vue({
         keywords: '',
         replacement: '',
         textToCheck: '',
-        occured: [],
-        notOccured: []
+        occurred: [],
+        notOccurred: []
     },
     computed: {
         showWarnings: function () {
@@ -27,8 +27,8 @@ const app = new Vue({
                 'show-inner-join': this.innerJoin.length > 0,
                 'show-duplicates': this.duplicates.length > 0,
                 'show-no-duplicates': this.duplicates.length == 0 && this.findDuplicatesClicked,
-                'show-occured': this.occured.length > 0,
-                'show-not-occured': this.notOccured.length > 0
+                'show-occurred': this.occurred.length > 0,
+                'show-not-occurred': this.notOccurred.length > 0
             }
         },
         rightJoinClass: function () {
@@ -89,10 +89,10 @@ const app = new Vue({
 
             this.findDuplicatesClicked = true;
         },
-        findOccurences() {
-            const itemOccurenceMap = new Map();
-            this.occured = [];
-            this.notOccured = [];
+        findOccurrences() {
+            const itemOccurrenceMap = new Map();
+            this.occurred = [];
+            this.notOccurred = [];
 
             this.keywords
                 .trim()
@@ -102,21 +102,21 @@ const app = new Vue({
                 .forEach(keyword => {
                     const regexp = new RegExp(keyword);
                     const found = regexp.test(this.textToCheck);
-                    itemOccurenceMap.set(keyword, found);
+                    itemOccurrenceMap.set(keyword, found);
                 });
 
-            itemOccurenceMap.forEach((value, key) => {
+            itemOccurrenceMap.forEach((value, key) => {
                 if (value) {
-                    this.occured.push(key);
+                    this.occurred.push(key);
                 } else {
-                    this.notOccured.push(key);
+                    this.notOccurred.push(key);
                 }
             });
         },
-        findAndReplaceOccurences() {
-            const itemOccurenceMap = new Map();
-            this.occured = [];
-            this.notOccured = [];
+        findAndReplaceOccurrences() {
+            const itemOccurrenceMap = new Map();
+            this.occurred = [];
+            this.notOccurred = [];
 
             this.keywords
                 .replace(QUOTES_COMMA_SEMICOLON_TAB_SPACE, EMPTY_STRING)
@@ -127,14 +127,14 @@ const app = new Vue({
                     const found = regex.test(this.textToCheck);
                     const replace = typeof this.replacement === 'undefined' ? EMPTY_STRING : this.replacement; 
                     this.textToCheck = this.textToCheck.replace(regex, replace);
-                    itemOccurenceMap.set(keyword, found);
+                    itemOccurrenceMap.set(keyword, found);
                 });
 
-            itemOccurenceMap.forEach((value, key) => {
+            itemOccurrenceMap.forEach((value, key) => {
                 if (value) {
-                    this.occured.push(key);
+                    this.occurred.push(key);
                 } else {
-                    this.notOccured.push(key);
+                    this.notOccurred.push(key);
                 }
             });
         }
